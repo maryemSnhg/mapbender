@@ -1,20 +1,51 @@
 # This file is the entry point to configure your own services.
 # Files in the packages/ subdirectory configure your dependencies.
+parameters:
+    locale: en
+    fallback_locale: en
 
+    cookie_secure: 0
+    cookie_lifetime: 3600
+
+    # OWS Proxy config (Mapbender)
+    ows_proxy3_logging: false
+    ows_proxy3_obfuscate_client_ip: false
+    ows_proxy3_cache: false
+    ows_proxy3_cache_ttl: 3600
+    ows_proxy3_host: 'localhost'
+    ows_proxy3_port: 8080
+    ows_proxy3_timeout: 60
+    ows_proxy3_connecttimeout: 30
+    ows_proxy3_user: ''
+    ows_proxy3_password: ''
+    ows_proxy3_nossl: false
+    ows_proxy3_dsn: ''
+    ows_proxy3_noproxy: ''
+    ows_proxy3_httpproxy: ''
+    ows_proxy3_proxy_user: ''
+    ows_proxy3_proxy_password: ''
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    Mapbender\CoreBundle\Security\JwtUserProvider: ~
 
+    Mapbender\CoreBundle\Security\JwtAuthenticator:
+        arguments:
+            $jwtSecret: '%env(JWT_SECRET)%'
+            $userProvider: '@Mapbender\CoreBundle\Security\JwtUserProvider'
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
-        resource: '../src/'
+        resource: '../src/*'
         exclude:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-
+    App\Service\MapbenderMap:
+        public: true
+        autowire: true
+        autoconfigure: true
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

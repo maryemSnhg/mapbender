@@ -7,8 +7,14 @@ security:
             entity:
                 class: FOM\UserBundle\Entity\User
                 property: username
+        jwt_provider:
+            id: Mapbender\CoreBundle\Security\JwtUserProvider
+
 
     firewalls:
+        dev_api_maps:
+            pattern: ^/api/maps
+            security: false
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js|components)/
             security: false
@@ -33,6 +39,7 @@ security:
 
         secured_area:
             pattern:    ^/
+            provider: main
             form_login:
                 check_path: /user/login/check
                 login_path: /user/login
@@ -46,6 +53,11 @@ security:
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
+        jwt_mapbender:
+            pattern: ^/applications
+            stateless: true
+            custom_authenticators:
+                - Mapbender\CoreBundle\Security\JwtAuthenticator
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
@@ -54,7 +66,10 @@ security:
         - { path: ^/manager,       roles: ROLE_USER }
         - { path: ^/api/login_check,     roles: PUBLIC_ACCESS }
         - { path: ^/api/doc,       roles: PUBLIC_ACCESS }
+        - { path: ^/api/mapbender/layers, roles: PUBLIC_ACCESS }
         - { path: ^/api,           roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/applications, roles: ROLE_USER }
+
     password_hashers:
         FOM\UserBundle\Entity\User: sha512
 

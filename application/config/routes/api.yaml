@@ -1,0 +1,9 @@
+# api_mapbender_layers:
+#   path: /api/mapbender/layers
+#   controller: App\Controller\LayerController::getLayers
+#   methods: [GET]
+#   defaults:
+#     _format: json
+api_controllers:
+    resource: ../../src/Controller/Api/
+    type: attribute

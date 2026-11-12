@@ -17,7 +17,6 @@ class MapController extends AbstractController
         EntityManagerInterface $em,
         MapbenderMap $builder
     ): JsonResponse {
-        // On cherche la map par slug ou titre
         $application = $em->getRepository(Application::class)
             ->findOneBy(['slug' => $name])
             ?? $em->getRepository(Application::class)
@@ -27,7 +26,6 @@ class MapController extends AbstractController
             return $this->json(['error' => 'Map not found'], 404);
         }
 
-        // Retour JSON avec toutes les infos de la map et layers
         return $this->json($builder->build($application));
     }
 }
